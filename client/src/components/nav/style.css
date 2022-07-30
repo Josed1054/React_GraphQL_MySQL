@@ -1,0 +1,18 @@
+nav {
+  display: flex;
+  justify-content: space-evenly;
+  height: 10vh;
+  position: -webkit-sticky;
+  position: sticky;
+  background-color: #1C3F60;
+}
+nav a {
+  align-self: center;
+  color: #E7F6F2;
+  text-decoration: none;
+}
+nav a:hover {
+  color: #A5C9CA;
+  transition-timing-function: ease-in-out;
+  transition: color 1s;
+}/*# sourceMappingURL=style.css.map */
