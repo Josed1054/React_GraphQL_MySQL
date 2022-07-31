@@ -103,6 +103,11 @@ span {
 
 h4 {
   margin-top: 2rem;
+  background: pink;
+  padding: 0.5rem;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
 }
 
 .contactosInputs {

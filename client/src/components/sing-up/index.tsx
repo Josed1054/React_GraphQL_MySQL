@@ -300,7 +300,7 @@ export function SingUp() {
             disabled={buttonStage !== 3}
             name="close"
             type="button"
-            value="Close ❌"
+            value="Iniciar ✅"
           />
         )}
         <div ref={infoEnd} />
