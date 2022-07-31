@@ -7,7 +7,7 @@ function Nav() {
     <>
       <nav>
         <NavLink to="/">
-          <h2>🤠</h2>
+          <h2>⚛</h2>
         </NavLink>
         <NavLink to="/">Home</NavLink>
         <NavLink to="Personas">Personas</NavLink>

@@ -1,13 +1,18 @@
 import React, { useState, useEffect, SyntheticEvent, useRef } from "react";
-import { DATOSPERSONA } from "../../utils/types/datosPersona";
+import { useMutation } from "@apollo/client";
+import autoAnimate from "@formkit/auto-animate";
+import { DATOSPERSONA, DATOSPERSONA_RES } from "../../utils/types/datosPersona";
+import { UPLOAD_PERSONA } from "../mutations/upload_persona_graphql";
 import { Header } from "./components/header";
 import { ProgressBarElem } from "./components/progressbar";
 import "./style.css";
 
 export function SingUp() {
   const infoEnd = useRef<null | HTMLDivElement>(null);
+  const parent = useRef<null | HTMLDivElement>(null);
 
   const [datosPersona, setDatosPersona] = useState<DATOSPERSONA>({
+    ID: undefined,
     nombre: "",
     segundo_nombre: "",
     apellido_paterno: "",
@@ -40,16 +45,27 @@ export function SingUp() {
     infoEnd.current?.scrollIntoView();
   }, [stage, buttonStage, datosPersona]);
 
+  useEffect(() => {
+    parent.current && autoAnimate(parent.current);
+  }, [parent]);
+
   function changeDatos(event: SyntheticEvent) {
-    let { name, value } = event.target as HTMLTextAreaElement;
+    let { name, value }: any = event.target as HTMLTextAreaElement;
 
     if (
       name === "nombre" ||
       name === "segundo_nombre" ||
       name === "apellido_paterno" ||
       name === "apellido_materno"
-    )
+    ) {
       value = value.replace(/[^a-z]/gi, "");
+      value = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
+    if (name === "telefono") {
+      value = value.replace(/[^0-9]/gi, "");
+      if (value !== "") value = value;
+    }
 
     if (
       datosPersona.nombre !== "" &&
@@ -63,6 +79,8 @@ export function SingUp() {
     }
     if (
       datosPersona.email !== "" &&
+      datosPersona.email.indexOf("@") !== -1 &&
+      datosPersona.email.indexOf(".") !== -1 &&
       datosPersona.telefono !== "" &&
       stage === 2
     ) {
@@ -77,13 +95,73 @@ export function SingUp() {
     });
   }
 
-  function addButtonStage(event: SyntheticEvent) {
-    let { name } = event.target as HTMLTextAreaElement;
+  const [uploadPersona, { data, loading, error }] = useMutation(
+    UPLOAD_PERSONA,
+    {
+      variables: {
+        nuevaPersona: {
+          ...datosPersona,
+        },
+      },
+      onCompleted: (data: DATOSPERSONA_RES) => {
+        if (data !== undefined && data !== null) {
+          sessionStorage.setItem("ID", `${data.addPersona.ID}`);
+          sessionStorage.setItem("nombre", datosPersona.nombre);
+          sessionStorage.setItem("segundo_nombre", datosPersona.segundo_nombre);
+          sessionStorage.setItem(
+            "apellido_paterno",
+            datosPersona.apellido_paterno
+          );
+          sessionStorage.setItem(
+            "apellido_paterno",
+            datosPersona.apellido_paterno
+          );
+          sessionStorage.setItem(
+            "fecha_de_nacimiento",
+            `${datosPersona.fecha_de_nacimiento}`
+          );
+          sessionStorage.setItem("email", datosPersona.email);
+          sessionStorage.setItem("telefono", `${datosPersona.telefono}`);
 
-    if (name === "add" && buttonStage < 3)
+          setDatosPersona((prevDatosPersona) => {
+            return {
+              ...prevDatosPersona,
+              ID: data.addPersona.ID,
+            };
+          });
+        }
+      },
+    }
+  );
+
+  async function addButtonStage(event: SyntheticEvent) {
+    let { name } = event.target as HTMLTextAreaElement;
+    if (name === "add") {
       setButtonStage((prevButtonStage) => prevButtonStage + 1);
-    if (name === "sub" && buttonStage > 0)
+    }
+    if (name === "sub") {
       setButtonStage((prevButtonStage) => prevButtonStage - 1);
+    }
+
+    if (buttonStage === 2 && stage === 3 && name !== "sub") {
+      uploadPersona();
+    }
+  }
+
+  function ThanksForSiningUp() {
+    if (loading) return <p>Loading...</p>;
+    if (error) return <h2>{`Error: ${error.message}`}</h2>;
+
+    return (
+      <>
+        <h3>Gracias!!</h3>
+        <p>{`Tu ID es el: ${datosPersona.ID}`}</p>
+        <p>{`Tu nombre es: ${datosPersona.nombre} ${datosPersona.segundo_nombre} ${datosPersona.apellido_paterno} ${datosPersona.apellido_materno}`}</p>
+        <p>{`Tu fecha de nacimiento es: ${datosPersona.fecha_de_nacimiento}`}</p>
+        <p>{`Tu correo es: ${datosPersona.email}`}</p>
+        <p>{`Tu telefono es: ${datosPersona.telefono}`}</p>
+      </>
+    );
   }
 
   function closeSingUp() {
@@ -92,15 +170,11 @@ export function SingUp() {
 
   if (!completed) {
     return (
-      <div id="SingUpContainer" className="SingUp-Container">
+      <div id="SingUpContainer" className="SingUp-Container" ref={parent}>
         <span className="material-symbols-outlined">minimize</span>
         <Header />
-        <div className="progressBarContainer">
-          <ProgressBarElem progress={stage} />
-        </div>
-        <div className="accept">
-          <h2>Registrate!!</h2>
-        </div>
+        <ProgressBarElem progress={stage} />
+        <h2 className="accept">Registrate!!</h2>
         {buttonStage > -1 && (
           <div className="nombresInputs" key={"nombresInputs"}>
             <label htmlFor="nombre">Primer Nombre:</label>
@@ -176,6 +250,7 @@ export function SingUp() {
               type="email"
               value={datosPersona.email}
               ref={inputFocus3}
+              pattern="/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
               required
             />
             <label htmlFor="telefono">Telefono:</label>
@@ -186,6 +261,7 @@ export function SingUp() {
               name="telefono"
               type="tel"
               value={datosPersona.telefono}
+              pattern="^[0-9]*$"
               required
             />
           </div>
@@ -195,24 +271,19 @@ export function SingUp() {
         )}
         {buttonStage === 3 && (
           <div className="Thanks" key={"Thanks"}>
-            <h3>Gracias!!</h3>
-            <p>{`Tu ID es: ${datosPersona.telefono}`}</p>
-            <p>{`Tu nombre es: ${datosPersona.nombre} ${datosPersona.segundo_nombre} ${datosPersona.apellido_paterno} ${datosPersona.apellido_materno}`}</p>
-            <p>{`Tu fecha de nacimiento es: ${datosPersona.fecha_de_nacimiento}`}</p>
-            <p>{`Tu correo es: ${datosPersona.email}`}</p>
-            <p>{`Tu telefono es: ${datosPersona.telefono}`}</p>
+            <ThanksForSiningUp />
           </div>
         )}
-        <div className="buttons">
-          {buttonStage > 0 && buttonStage !== 3 && (
-            <input
-              onClick={addButtonStage}
-              name="sub"
-              type="button"
-              value="◀ Back"
-            />
-          )}
-          {buttonStage !== 3 && (
+        {buttonStage !== 3 && (
+          <div className="buttons">
+            {buttonStage > 0 && (
+              <input
+                onClick={addButtonStage}
+                name="sub"
+                type="button"
+                value="◀ Back"
+              />
+            )}
             <input
               onClick={addButtonStage}
               disabled={buttonStage === stage}
@@ -220,11 +291,11 @@ export function SingUp() {
               type="button"
               value="Next ▶"
             />
-          )}
-        </div>
-
+          </div>
+        )}
         {buttonStage === 3 && (
           <input
+            className="buttonClose"
             onClick={closeSingUp}
             disabled={buttonStage !== 3}
             name="close"
@@ -237,7 +308,7 @@ export function SingUp() {
     );
   } else {
     return (
-      <div className="completed">
+      <div className="completed" ref={parent}>
         <p>{`Gracias ${datosPersona.nombre}`}</p>
       </div>
     );

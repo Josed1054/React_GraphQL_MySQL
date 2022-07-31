@@ -22,14 +22,14 @@ const typeDefs = gql`
   scalar Date
 
   type Persona {
-    ID: Int!
-    nombre: String!
+    ID: Int
+    nombre: String
     segundo_nombre: String
-    apellido_paterno: String!
+    apellido_paterno: String
     apellido_materno: String
-    fecha_de_nacimiento: Date!
-    email: String!
-    telefono: Int
+    fecha_de_nacimiento: Date
+    email: String
+    telefono: String
   }
 
   input PersonaInput {
@@ -39,17 +39,18 @@ const typeDefs = gql`
     apellido_materno: String
     fecha_de_nacimiento: Date!
     email: String!
-    telefono: Int
+    telefono: String!
   }
 
   type Query {
-    personCount: Int!
-    persons: [Persona!]!
-    findPerson(ID: Int!): Persona
+    personaCount: Int!
+    personas: [Persona!]!
+    findPersona(ID: Int!): Persona
   }
 
   type Mutation {
-    addPerson(nuevaPersona: PersonaInput!): Persona
+    addPersona(nuevaPersona: PersonaInput!): Persona
+    addPersonaPrisma(nuevaPersona: PersonaInput!): Persona
   }
 `;
 

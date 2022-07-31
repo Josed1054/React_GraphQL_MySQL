@@ -47,7 +47,6 @@ input[type=button]:disabled {
 .buttons {
   display: flex;
   justify-content: space-around;
-  padding-top: 1rem;
 }
 
 .SingUpHeader, .accept, .nombresInputs, h4, .fechaInput, .buttons {
@@ -71,7 +70,7 @@ span {
   height: fit-content;
 }
 
-.progressBarContainer {
+.ProgressBar {
   position: -webkit-sticky;
   position: sticky;
   top: 1rem;
@@ -79,25 +78,34 @@ span {
 }
 
 .nombresInputs {
-  height: 26vh;
   display: flex;
   justify-content: end;
 }
+.nombresInputs input {
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
 
 .fechaInput {
-  height: 26vh;
+  height: 28vh;
   display: flex;
-  align-items: center;
+  flex-flow: column;
+  justify-content: center;
 }
 
 .contactosInputs {
-  height: 26vh;
+  height: 28vh;
   display: flex;
   justify-content: center;
 }
 
+.buttonClose {
+  grid-column: span 2;
+  width: inherit;
+}
+
 .Thanks {
-  height: 18.5vh;
+  height: 20vh;
   display: flex;
   flex-flow: column;
 }
