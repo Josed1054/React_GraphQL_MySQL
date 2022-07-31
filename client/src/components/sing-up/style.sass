@@ -12,6 +12,7 @@
   bottom: 0
   right: 2rem
   display: grid
+  background: white
 
 .completed
   width: 20vw
@@ -27,9 +28,12 @@
   width: 0rem
 
 input[type="button"]
-  border-radius: 2rem
+  border-radius: 1rem
   padding: 0.4rem 0.7rem
   cursor: pointer
+  width: fit-content
+  height: fit-content
+  align-self: end
 
 input[type="button"]:disabled
   cursor: not-allowed
@@ -72,24 +76,34 @@ span
     margin-bottom: 1%
 
 .fechaInput
-  height: 28vh
+  height: 30vh
   display: flex
   flex-flow: column
   justify-content: center
 
+h4
+  margin-top: 2rem
+
 .contactosInputs
-  height: 28vh
+  height: 30vh
   display: flex
   justify-content: center
 
 .buttonClose
   grid-column: span 2
   width: inherit
+  justify-self: center
 
 .Thanks
-  height: 20vh
+  height: 22vh
   display: flex
   flex-flow: column
 
   p
     margin: 0
+
+.completed
+  padding: 1rem
+
+  p
+    text-align: center
