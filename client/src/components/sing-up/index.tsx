@@ -186,6 +186,7 @@ export function SingUp() {
               type="text"
               value={datosPersona.nombre}
               ref={inputFocus1}
+              autocomplete="off"
               required
             />
             <label htmlFor="segundo_nombre">Segundo Nombre:</label>
@@ -196,6 +197,7 @@ export function SingUp() {
               name="segundo_nombre"
               type="text"
               value={datosPersona.segundo_nombre}
+              autocomplete="off"
             />
             <label htmlFor="apellido_paterno">Apellido Paterno:</label>
             <input
@@ -205,6 +207,7 @@ export function SingUp() {
               name="apellido_paterno"
               type="text"
               value={datosPersona.apellido_paterno}
+              autocomplete="off"
               required
             />
             <label htmlFor="apellido_materno">Apellido Materno:</label>
@@ -215,6 +218,7 @@ export function SingUp() {
               name="apellido_materno"
               type="text"
               value={datosPersona.apellido_materno}
+              autocomplete="off"
             />
           </div>
         )}
@@ -232,6 +236,7 @@ export function SingUp() {
               type="date"
               value={datosPersona.fecha_de_nacimiento}
               ref={inputFocus2}
+              autocomplete="off"
               required
             />
           </div>
@@ -251,6 +256,7 @@ export function SingUp() {
               value={datosPersona.email}
               ref={inputFocus3}
               pattern="/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
+              autocomplete="off"
               required
             />
             <label htmlFor="telefono">Telefono:</label>
@@ -262,6 +268,7 @@ export function SingUp() {
               type="tel"
               value={datosPersona.telefono}
               pattern="^[0-9]*$"
+              autocomplete="off"
               required
             />
           </div>
